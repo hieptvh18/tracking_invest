@@ -1,7 +1,10 @@
 package util
 
 import (
+	"log"
 	"os"
+	"path/filepath"
+	"time"
 )
 
 // GetEnv returns value from env, fallback to defaultVal if empty.
@@ -12,28 +15,42 @@ func GetEnv(key, defaultVal string) string {
 	return defaultVal
 }
 
-// func exec log info to storage/logs/*.log
-func logInfo(message string) {
-	now := time.Now().Format("2006-01-02 15:04:05")
-	filePath := fmt.Sprintf("storage/logs/%s.log", now)
+// LogInfo writes info message to storage/logs (daily): storage/logs/2006-01-02/info.log
+func LogInfo(message string) {
+	now := time.Now()
+	dateDir := now.Format("2006-01-02")
+	dir := filepath.Join("storage", "logs", dateDir)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		log.Printf("LogInfo mkdir: %v", err)
+		return
+	}
+	filePath := filepath.Join(dir, "info.log")
 	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
-		log.Fatalf("Failed to open log file: %v", err)
+		log.Printf("LogInfo open: %v", err)
+		return
 	}
 	defer file.Close()
 	log.SetOutput(file)
-	log.Printf("INFO: %s %s", now, message)
+	log.Printf("INFO: %s %s", now.Format("2006-01-02 15:04:05"), message)
 }
 
-// func exec log error to storage/logs/*.log
-func logError(message string) {
-	now := time.Now().Format("2006-01-02 15:04:05")
-	filePath := fmt.Sprintf("storage/logs/%s.log", now)
+// LogError writes error message to storage/logs (daily): storage/logs/2006-01-02/error.log
+func LogError(message string) {
+	now := time.Now()
+	dateDir := now.Format("2006-01-02")
+	dir := filepath.Join("storage", "logs", dateDir)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		log.Printf("LogError mkdir: %v", err)
+		return
+	}
+	filePath := filepath.Join(dir, "error.log")
 	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
-		log.Fatalf("Failed to open log file: %v", err)
+		log.Printf("LogError open: %v", err)
+		return
 	}
 	defer file.Close()
 	log.SetOutput(file)
-	log.Printf("ERROR: %s %s", now, message)
+	log.Printf("ERROR: %s %s", now.Format("2006-01-02 15:04:05"), message)
 }
