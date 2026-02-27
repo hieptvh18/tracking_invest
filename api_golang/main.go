@@ -1,57 +1,46 @@
 package main
 
-import "fmt"
+import (
+	"api_golang/database"
+	"api_golang/routes"
+	"api_golang/util"
+	"log"
+	"os"
 
-const PI = 3.14
-
-type Brand struct {
-	Name  string
-	Phone string
-}
+	"github.com/joho/godotenv"
+)
 
 func main() {
-	fmt.Println("Hello Invest Tracking 🚀")
+	// Chỉ lấy env từ file .env (không đọc .env.example)
+	_ = godotenv.Load(".env")
 
-	name := "John"
-	listName := [5]string{"John", "Jane", "Jim", "Jill", "Jack"}
-	fmt.Println("Hello", name)
-	fmt.Println("List Name", listName[0])
-	fmt.Println("PI", PI)
-	fmt.Println(len(listName))
-	fmt.Println(cap(listName))
-	fmt.Println(sum(1, 2))
-	fmt.Println(sayHi())
-	fmt.Println(mapNumber())
-	fmt.Println(demoPointer())
+	db, err := database.OpenMySQL()
+	if err != nil {
+		log.Fatalf("Database: %v", err)
+	}
+	defer db.Close()
 
-	shop := Brand{"iphone", "Adndroi"}
-
-	fmt.Println(shop.Name)
-}
-
-func sum(a int, b int) int {
-	return a + b
-}
-
-func sayHi() string {
-	return "Hello"
-}
-
-func mapNumber() int {
-	total := 0
-	for i := 1; i <= 10; i++ {
-		total += i
+	// Chạy migration bằng lệnh: go run . migrate
+	if len(os.Args) > 1 && os.Args[1] == "migrate" {
+		if err := database.MigrateUsers(db); err != nil {
+			log.Fatalf("Migration: %v", err)
+		}
+		log.Println("Migration done. Exit.")
+		return
 	}
 
-	return total
-}
+	// Khi chạy server, vẫn tự migrate nếu chưa có bảng
+	if err := database.MigrateUsers(db); err != nil {
+		log.Fatalf("Migration: %v", err)
+	}
 
-func demoPointer() int {
-	a, b := 1, 1000
+	port := util.GetEnv("APP_PORT", "8080")
+	addr := ":" + port
+	r := routes.SetupRouter(db)
 
-	// defined pointer p = a vì trỏ về cùng 1 vùng nhớ
-	p := &a
-	*p = b
-
-	return a
+	log.Printf("Server listening on http://localhost%v", addr)
+	log.Printf("API base: http://localhost%v/api", addr)
+	if err := r.Run(addr); err != nil {
+		log.Fatalf("Server failed: %v", err)
+	}
 }
