@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"api_golang/controllers"
+	"api_golang/controllers/users"
 	"api_golang/repositories"
 	"api_golang/services"
 	"database/sql"
@@ -26,6 +26,12 @@ func SetupRouter(db *sql.DB) *gin.Engine {
 			users.PUT("/:id", userController.Update)
 			users.DELETE("/:id", userController.Delete)
 		}
+
+		api.GET("/heathcheck", func(ctx *gin.Context) {
+			ctx.JSON(200, gin.H{
+				"Message" : "Ping pong successful",
+			})
+		})
 	}
 
 	return r

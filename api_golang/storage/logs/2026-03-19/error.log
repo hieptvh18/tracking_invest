@@ -1,0 +1,5 @@
+2026/03/19 10:49:50 ERROR: 2026-03-19 10:49:50 Migration: Error 1063 (42000): Incorrect column specifier for column 'id'
+2026/03/19 10:56:03 ERROR: 2026-03-19 10:56:03 Migration: Error 1063 (42000): Incorrect column specifier for column 'id'
+2026/03/19 10:56:37 ERROR: 2026-03-19 10:56:37 Migration: Error 1063 (42000): Incorrect column specifier for column 'id'
+2026/03/19 10:58:43 ERROR: 2026-03-19 10:58:43 Migration: Error 1063 (42000): Incorrect column specifier for column 'id'
+2026/03/19 11:02:58 ERROR: 2026-03-19 11:02:58 Migration: Error 1063 (42000): Incorrect column specifier for column 'id'

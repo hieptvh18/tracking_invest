@@ -10,6 +10,7 @@ import (
 	"api_golang/internal/kafka"
 )
 
+// command test read data from Kafka topic "test-topic": using consumer
 func main() {
 	brokers := []string{
 		"localhost:19092",

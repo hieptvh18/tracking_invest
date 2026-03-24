@@ -60,6 +60,24 @@ func (r *UserRepository) List() []*models.User {
 	return list
 }
 
+func (r *UserRepository) GetListDesc() []*models.User {
+	q := `SELECT * FROM users ORDER BY id DESC`
+	rows, err := r.db.Query(q)
+	if err != nil {
+		return nil
+	}
+	defer rows.Close()
+	var list []*models.User
+
+	for rows.Next() {
+		var u models.User
+		
+		list = append(list, &u)
+	}
+
+	return list
+}
+
 func (r *UserRepository) Update(u *models.User) (*models.User, bool) {
 	q := `UPDATE users SET name = ?, age = ?, phone = ?, email = ? WHERE id = ?`
 	res, err := r.db.Exec(q, u.Name, u.Age, u.Phone, u.Email, u.ID)

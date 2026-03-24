@@ -8,6 +8,7 @@ import (
 	"api_golang/internal/kafka"
 )
 
+// command test send data to Kafka topic "test-topic": using producer
 func main() {
 
 	brokers := []string{
@@ -24,7 +25,7 @@ func main() {
 
 	msg := fmt.Sprintf("Hello at %s", time.Now())
 
-	err := producer.Send(ctx, "test-key", msg)
+	err := producer.Send(ctx, "new key", msg)
 	if err != nil {
 		panic(err)
 	}

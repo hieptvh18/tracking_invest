@@ -1,7 +1,7 @@
 package database
 
 import (
-	"api_golang/util"
+	"api_golang/utils/env"
 	"database/sql"
 	"fmt"
 	"log"
@@ -9,13 +9,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// OpenMySQL returns *sql.DB for MySQL using env: DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME.
-func OpenMySQL() (*sql.DB, error) {
-	host := util.GetEnv("DB_HOST", "localhost")
-	port := util.GetEnv("DB_PORT", "3306")
-	user := util.GetEnv("DB_USER", "root")
-	pass := util.GetEnv("DB_PASSWORD", "")
-	name := util.GetEnv("DB_NAME", "golang")
+// ConnectMySQL returns *sql.DB for MySQL using env: DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME.
+func ConnectMySQL() (*sql.DB, error) {
+	host := env.GetEnv("DB_HOST", "localhost")
+	port := env.GetEnv("DB_PORT", "3306")
+	user := env.GetEnv("DB_USER", "root")
+	pass := env.GetEnv("DB_PASSWORD", "")
+	name := env.GetEnv("DB_NAME", "golang")
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", user, pass, host, port, name)
 	db, err := sql.Open("mysql", dsn)
